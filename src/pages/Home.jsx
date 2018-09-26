@@ -6,8 +6,7 @@ import ListaTweet from '../components/ListaTweet';
 class Home extends Component {
 
     state = {
-        currentPost: '',
-        tweets: []
+        currentPost: ''
     };
 
     onChange = (event) => {
@@ -22,20 +21,17 @@ class Home extends Component {
             return;
         }
 
-        this.setState(state => {
-            const newTweet = {
-                content: state.currentPost,
-                uid: new Date(Date.now()).toISOString(),
-                author: currentUser.uid,
-                timestamp: Date.now(),
-                authorName: currentUser.displayName,
-                authorUserName: currentUser.userName
-            };
+      const newTweet = {
+        content: this.state.currentPost,
+        uid: new Date(Date.now()).toISOString(),
+        author: currentUser.uid,
+        timestamp: Date.now(),
+        authorName: currentUser.displayName,
+        authorUserName: currentUser.userName
+      };
 
-            return {
-                currentPost: '',
-                tweets: [newTweet, ...state.tweets]
-            };
+        this.setState({currentPost: ''}, () => {
+            this.props.onTweet(newTweet);
         })
     };
 
@@ -46,7 +42,8 @@ class Home extends Component {
 
     render() {
 
-        const {currentPost, tweets} = this.state;
+        const {currentPost} = this.state;
+        const {tweets} = this.props;
 
         return (
             <Container style={{marginTop: 30}}>

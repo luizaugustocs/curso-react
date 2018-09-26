@@ -37,7 +37,7 @@ class Configuracoes extends React.Component {
     };
 
     onSave = () => {
-        this.props.onSaveConfiguracao({...this.state}).then(() => this.props.history.goBack())
+        this.props.onSave({...this.state}).then(() => this.props.history.goBack())
     };
 
     render() {

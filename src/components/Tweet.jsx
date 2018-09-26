@@ -21,7 +21,7 @@ const Tweet = props => {
                     <h5>{tweet.authorName}</h5>
                 </Col>
                 <Col md={3}>
-                    <Link to={`/perfis/${tweet.author}`}>{`@${tweet.authorUserName}`}</Link>
+                    <Link to={`/perfil/${tweet.author}`}>{`@${tweet.authorUserName}`}</Link>
                 </Col>
                 <Col md={3}>
                     <h5>{date}</h5>
