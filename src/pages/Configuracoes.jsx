@@ -1,12 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Button, Container, Form} from 'react-bootstrap';
 
 
 class Configuracoes extends React.Component {
 
+    static propTypes = {
+        currentUser: PropTypes.object,
+        onSave: PropTypes.func.isRequired
+    }
+
     constructor(props) {
         super(props);
-        console.log(this.props)
         this.state = {
             displayName: '',
             userName: '',

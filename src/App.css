@@ -1,28 +1,20 @@
-.App {
-  text-align: center;
+.profile-photo {
+  max-height: 100px;
+  max-width: 100px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.profile-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin-left: 10px;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.profile-section {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .25rem;
+  padding-right: 5px;
+  margin-top: 10px;
 }

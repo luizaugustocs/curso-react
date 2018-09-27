@@ -5,18 +5,16 @@ import Tweet from './Tweet';
 
 const ListaTweet = props => {
     return (
-        <ListGroup style={{flexBasis: '100%'}} >
+        <ListGroup style={{flexBasis: '100%', marginTop: 10}} >
             {props.tweets.map(tweet => (
-                <Tweet key={tweet.id} tweet={tweet}/>
+                <Tweet key={tweet.uid} tweet={tweet}/>
             ))}
         </ListGroup>
     );
 };
 
 ListaTweet.propTypes = {
-    tweets: PropTypes.array,
-    onNavigate: PropTypes.func.isRequired
-
+    tweets: PropTypes.array
 };
 
 export default ListaTweet;

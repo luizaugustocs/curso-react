@@ -35,6 +35,7 @@ exports.onNewTweet = functions.firestore.document('/tweets/{tweetId}')
                 snapshot.ref.set({
                     authorName: author.data().displayName || '',
                     authorUserName: author.data().userName || '',
+                    authorPhotoURL: author.data().photoURL || '',
                     uid: snapshot.id
                 }, {merge: true}));
 

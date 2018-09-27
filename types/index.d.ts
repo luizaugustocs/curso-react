@@ -21,7 +21,8 @@ export type Tweet = {
     author: string,
     timestamp: firestore.Timestamp,
     authorName?: string,
-    authorUserName?: string
+    authorUserName?: string,
+    authorPhotoURL?: string
 }
 
 

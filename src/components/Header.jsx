@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 import { Navbar, Nav, Button} from 'react-bootstrap';
 import { NavLink} from 'react-router-dom';
 
@@ -26,6 +27,12 @@ const Header = (props) => {
             </Nav>
         </Navbar>
     )
+};
+
+Header.propTypes = {
+    currentUser: PropTypes.object,
+    onLogin: PropTypes.func.isRequired,
+    onLogout: PropTypes.func.isRequired
 }
 
 

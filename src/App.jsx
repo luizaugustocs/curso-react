@@ -24,7 +24,7 @@ class App extends Component {
         uid: '1234',
         userName: 'luizaugustocs',
         displayName: 'Luiz Augusto',
-        photoURL: '',
+        photoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png',
         email: 'luizaugustocsouza@gmail.com'
       }
     });
