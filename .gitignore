@@ -23,4 +23,5 @@ yarn-error.log*
 
 .idea/
 
+.firebaserc
 src/config.js
