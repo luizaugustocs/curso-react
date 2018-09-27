@@ -7,6 +7,8 @@ import Perfil from './pages/Perfil';
 import Configuracoes from './pages/Configuracoes'
 import NotFound from './pages/NotFound';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import AuthService from './services/AuthService';
+import TweetService from './services/TweetService';
 
 class App extends Component {
   constructor(props) {
@@ -18,29 +20,36 @@ class App extends Component {
     }
   }
 
-  onLogin = () => {
-    this.setState({
-      currentUser: {
-        uid: '1234',
-        userName: 'luizaugustocs',
-        displayName: 'Luiz Augusto',
-        photoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png',
-        email: 'luizaugustocsouza@gmail.com'
+  componentDidMount(){
+    AuthService.onAuthChange((user) => {
+      if (user) {
+        this.setState({currentUser: user}, () => {
+          this.getUserFeed(user)
+        })
       }
-    });
+    })
+  }
+
+  getUserFeed = (user) => {
+    TweetService.getUserFeed(user)
+      .then(tweets => {
+        console.log(tweets);
+        this.setState({tweets});
+      });
+  };
+
+  onLogin = () => {
+    AuthService.loginWithGoogle()
   };
 
   onLogout = () => {
-    this.setState({ currentUser: undefined }, () => {
-      this.props.history.push('/')
-    });
+    AuthService.logout();
   };
 
   onPostTweet = (tweet) => {
-    this.setState(state => ({
-      tweets: [tweet, ...state.tweets]
-    }))
-  }
+    TweetService.newTweet(tweet)
+      .then(() => setTimeout(() =>this.getUserFeed(this.state.currentUser), 1000));
+  };
   onSaveConfiguracao = (updatedUser) => {
     return new Promise(resolve => {
       this.setState({

@@ -7,7 +7,7 @@ const ListaTweet = props => {
     return (
         <ListGroup style={{flexBasis: '100%', marginTop: 10}} >
             {props.tweets.map(tweet => (
-                <Tweet key={tweet.uid} tweet={tweet}/>
+                <Tweet key={tweet.data().uid} tweet={tweet.data()}/>
             ))}
         </ListGroup>
     );

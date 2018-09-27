@@ -29,18 +29,10 @@ class Home extends Component {
             return;
         }
 
-        const newTweet = {
-            content: this.state.currentPost,
-            uid: new Date(Date.now()).toISOString(),
-            author: currentUser.uid,
-            timestamp: Date.now(),
-            authorName: currentUser.displayName,
-            authorUserName: currentUser.userName,
-            authorPhotoURL: currentUser.photoURL
-        };
+        const content = this.state.currentPost;
 
         this.setState({currentPost: '', alertVisible: false}, () => {
-            this.props.onTweet(newTweet);
+            this.props.onTweet(content);
         })
     };
 
@@ -51,7 +43,7 @@ class Home extends Component {
 
         return (
             <Container style={{marginTop: 30}}>
-                <Alert variant="danger" show={alertVisible}>
+                <Alert variant="danger" defaultShow={alertVisible}>
                     Você deve estar logado para postar alguma coisa.
                 </Alert>
                 <Form>

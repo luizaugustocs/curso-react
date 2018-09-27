@@ -1,3 +1,5 @@
+import firebase from '../firebase';
+
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 // // Create and Deploy Your First Cloud Functions
@@ -11,49 +13,55 @@ admin.initializeApp(functions.config().firebase);
 
 exports.onNewUser = functions.auth.user().onCreate((user) => {
 
-    const parsedUser = {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        userName: user.email.split('@')[0]
-    };
+  const parsedUser = {
+    uid: user.uid,
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: user.photoURL || 'https://www.bookmydesign.com/auth-image/medium/blank-user.png',
+    userName: user.email.split('@')[0]
+  };
 
-    return admin.firestore().doc(`/users/${user.uid}`)
-        .set(parsedUser);
+  return admin.firestore().doc(`/users/${user.uid}`)
+    .set(parsedUser)
+    .then(() =>
+      admin.firestore().doc(`/users/${user.uid}/followers/${user.uid}`)
+        .set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() }));
 });
 
 exports.onNewTweet = functions.firestore.document('/tweets/{tweetId}')
-    .onCreate((snapshot, context) => {
+  .onCreate((snapshot, context) => {
 
-        const newTweet = snapshot.data();
-        const {tweetId} = context.params;
-        const {author: authorId} = newTweet;
+    const newTweet = snapshot.data();
+    const { tweetId } = context.params;
+    const { author: authorId } = newTweet;
 
-        const updateTweetPromise = admin.firestore().doc(`/users/${authorId}`).get()
-            .then(author =>
-                snapshot.ref.set({
-                    authorName: author.data().displayName || '',
-                    authorUserName: author.data().userName || '',
-                    authorPhotoURL: author.data().photoURL || '',
-                    uid: snapshot.id
-                }, {merge: true}));
+    const updateTweetPromise = admin.firestore().doc(`/users/${authorId}`).get()
+      .then(author =>
+        snapshot.ref.set({
+          authorName: author.data().displayName || '',
+          authorUserName: author.data().userName || '',
+          authorPhotoURL: author.data().photoURL || '',
+          uid: snapshot.id
+        }, { merge: true }));
 
-        const authorTweetPromise = admin.firestore().doc(`/users/${authorId}/tweets/${tweetId}`)
-            .set({timestamp: admin.firestore.FieldValue.serverTimestamp()});
+    const authorTweetPromise = admin.firestore().doc(`/users/${authorId}/tweets/${tweetId}`)
+      .set({ timestamp: admin.firestore.FieldValue.serverTimestamp() });
 
-        const followersPromise = admin.firestore().collection(`/users/${authorId}/followers`)
-            .get()
-            .then(followers =>
-                Promise.all(
-                    followers.docs
-                        .map(follower => admin.firestore()
-                            .doc(`/users/${follower.id}/feed/${snapshot.id}`)
-                            .set({timestamp: admin.firestore.FieldValue.serverTimestamp(), author: newTweet.author})
-                        )
-                )
-            );
+    const followersPromise = admin.firestore().collection(`/users/${authorId}/followers`)
+      .get()
+      .then(followers =>
+        Promise.all(
+          followers.docs
+            .map(follower => admin.firestore()
+              .doc(`/users/${follower.id}/feed/${snapshot.id}`)
+              .set({
+                timestamp: admin.firestore.FieldValue.serverTimestamp(),
+                author: newTweet.author
+              })
+            )
+        )
+      );
 
-        return Promise.all([updateTweetPromise, authorTweetPromise, followersPromise])
+    return Promise.all([updateTweetPromise, authorTweetPromise, followersPromise])
 
-    });
+  });

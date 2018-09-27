@@ -1,65 +1,66 @@
-import React, {Component} from 'react';
-import {Button, Container, Row} from 'react-bootstrap';
+import React, { Component } from 'react';
+import { Button, Container, Row } from 'react-bootstrap';
 import ListaTweet from '../components/ListaTweet';
+import UserService from '../services/UserService';
+import TweetService from '../services/TweetService';
 
 class Perfil extends Component {
 
-    state = {
-        tweets: [{
-            content: 'Teste 3',
-            uid: '3',
-            author: '1234',
-            timestamp: Date.now(),
-            authorName: 'Luiz Augusto',
-            authorUserName: 'luizaugustocs',
-            authorPhotoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png'
-        }, {
-            content: 'Teste 2',
-            uid: '2',
-            author: '1234',
-            timestamp: Date.now() - 500000,
-            authorName: 'Luiz Augusto',
-            authorUserName: 'luizaugustocs',
-            authorPhotoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png'
-        }, {
-            content: 'Teste 1',
-            uid: '1',
-            author: '1234',
-            timestamp: Date.now() - 1000000,
-            authorName: 'Luiz Augusto',
-            authorUserName: 'luizaugustocs',
-            authorPhotoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png'
-        }],
-        user: {
-            uid: '1234',
-            photoURL: 'https://www.bookmydesign.com/auth-image/medium/blank-user.png',
-            userName: 'luizaugustocs',
-            displayName: 'Luiz Augusto',
-            email: 'luizaugustocsouza@gmail.com'
-        }
-    };
+  state = {
+    loading: false,
+    tweets: [],
+    user: {}
+  };
 
-    render() {
-        const {user, tweets} = this.state;
-        return (
-            <Container>
-                <Row className="profile-section">
-                    <img src={user.photoURL} alt="foto do perfil do usuário"
-                         className="profile-photo"/>
-                    <div className="profile-data">
-                        <span>{user.displayName}</span>
-                        <span>{`@${user.userName}`}</span>
-                    </div>
-                    <div className="ml-auto">
-                        <Button>Seguir</Button>
-                    </div>
-                </Row>
-                <Row>
-                    <ListaTweet tweets={tweets}/>
-                </Row>
-            </Container>
-        );
+  componentDidMount() {
+
+    const { id } = this.props.match.params;
+
+    this.setState({ loading: true }, () => {
+      UserService.getUserData(id)
+        .then(user => {
+          this.setState({ user: user })
+          TweetService.getUserTweets(user)
+            .then(tweets => {
+              this.setState({ tweets: tweets, loading: false })
+            });
+        })
+    })
+
+
+  }
+
+  render() {
+    const { user, tweets, loading } = this.state;
+    const { currentUser } = this.props;
+
+    if (loading) {
+      return <h1>Loading</h1>
     }
+
+    const shouldShowFollowButton = currentUser !== undefined && user !== undefined && currentUser.uid !== user.uid;
+    return (
+      <Container>
+        <Row className="profile-section">
+          <img src={user.photoURL} alt="foto do perfil do usuário"
+               className="profile-photo" />
+          <div className="profile-data">
+            <span>{user.displayName}</span>
+            <span>{`@${user.userName}`}</span>
+          </div>
+          {shouldShowFollowButton ? (
+            <div className="ml-auto">
+              <Button>Seguir</Button>
+            </div>
+          ) : null}
+
+        </Row>
+        <Row>
+          <ListaTweet tweets={tweets} />
+        </Row>
+      </Container>
+    );
+  }
 }
 
 export default Perfil;

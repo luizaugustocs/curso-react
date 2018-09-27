@@ -14,7 +14,7 @@ const formatter = new Intl.DateTimeFormat('pt-BR',{
 
 const Tweet = props => {
     const {tweet} = props;
-    const date = formatter.format(new Date(tweet.timestamp));
+    const date = formatter.format(tweet.timestamp.toDate());
     return (
         <ListGroup.Item key={tweet.uid}  style={{display: 'flex', justifyContent: 'space-between'}}>
             <div className="container-fluid" style={{marginRight: 10}}>
