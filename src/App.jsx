@@ -48,8 +48,9 @@ class App extends Component {
 
   onPostTweet = (tweet) => {
     TweetService.newTweet(tweet)
-      .then(() => setTimeout(() =>this.getUserFeed(this.state.currentUser), 1000));
+      .then(() => setTimeout(() => this.getUserFeed(this.state.currentUser), 1000));
   };
+
   onSaveConfiguracao = (updatedUser) => {
     return new Promise(resolve => {
       this.setState({
