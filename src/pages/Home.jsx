@@ -51,7 +51,7 @@ class Home extends Component {
 
         return (
             <Container style={{marginTop: 30}}>
-                <Alert variant="danger" show={alertVisible}>
+                <Alert variant="danger" defaultShow={alertVisible}>
                     Você deve estar logado para postar alguma coisa.
                 </Alert>
                 <Form>
