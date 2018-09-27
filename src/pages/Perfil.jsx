@@ -3,6 +3,7 @@ import { Button, Container, Row } from 'react-bootstrap';
 import ListaTweet from '../components/ListaTweet';
 import UserService from '../services/UserService';
 import TweetService from '../services/TweetService';
+import Loading from '../components/Loading';
 
 class Perfil extends Component {
 
@@ -32,10 +33,14 @@ class Perfil extends Component {
 
   render() {
     const { user, tweets, loading } = this.state;
-    const { currentUser } = this.props;
+    const { currentUser, onFollow } = this.props;
 
     if (loading) {
-      return <h1>Loading</h1>
+      return (
+          <div className="lds-container">
+            <Loading/>
+          </div>
+      )
     }
 
     const shouldShowFollowButton = currentUser !== undefined && user !== undefined && currentUser.uid !== user.uid;
@@ -50,7 +55,7 @@ class Perfil extends Component {
           </div>
           {shouldShowFollowButton ? (
             <div className="ml-auto">
-              <Button>Seguir</Button>
+              <Button onClick={() => onFollow(user)}>Seguir</Button>
             </div>
           ) : null}
 

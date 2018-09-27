@@ -1,5 +1,3 @@
-import firebase from '../firebase';
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 // // Create and Deploy Your First Cloud Functions
@@ -10,7 +8,7 @@ const admin = require('firebase-admin');
 // });
 
 admin.initializeApp(functions.config().firebase);
-
+admin.firestore()
 exports.onNewUser = functions.auth.user().onCreate((user) => {
 
   const parsedUser = {
@@ -25,7 +23,7 @@ exports.onNewUser = functions.auth.user().onCreate((user) => {
     .set(parsedUser)
     .then(() =>
       admin.firestore().doc(`/users/${user.uid}/followers/${user.uid}`)
-        .set({ timestamp: firebase.firestore.FieldValue.serverTimestamp() }));
+        .set({ timestamp: admin.firestore.FieldValue.serverTimestamp() }));
 });
 
 exports.onNewTweet = functions.firestore.document('/tweets/{tweetId}')

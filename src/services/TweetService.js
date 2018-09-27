@@ -21,7 +21,7 @@ const TweetService = {
         const query = firebase.firestore().collection(`/tweets`)
             .where('author', '==', user.uid)
             .orderBy('timestamp', 'desc')
-            .limit(20);
+            .limit(5);
 
         return (lastTweet ? query.startAfter(lastTweet) : query)
             .get()
@@ -31,7 +31,7 @@ const TweetService = {
     getUserFeed: (user, lastTweet)=> {
         const query = firebase.firestore().collection(`/users/${user.uid}/feed/`)
             .orderBy('timestamp', 'desc')
-            .limit(20);
+            .limit(5);
 
         return (lastTweet ? query.startAfter(lastTweet) : query)
             .get()
