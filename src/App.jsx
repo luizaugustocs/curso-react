@@ -10,13 +10,19 @@ import {Route, Switch, withRouter} from 'react-router-dom';
 import AuthService from './services/AuthService';
 import TweetService from './services/TweetService';
 import UserService from './services/UserService';
+import createStore from './createStore';
+import {Provider} from 'react-redux';
+
+import {usuarioLogin, usuarioLogout} from './state/actions/UsuarioActions';
+
+const store = createStore({});
+
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            currentUser: undefined,
             tweets: []
         }
     }
@@ -24,19 +30,12 @@ class App extends Component {
     componentDidMount() {
         AuthService.onAuthChange((authUser) => {
             if (authUser) {
-                UserService.getUserData(authUser.uid)
-                    .then((user) => {
-                        console.log(authUser);
-                        console.log(user);
-                        this.setState({currentUser: user});
-                        this.getUserFeed(user)
-
-                    })
+                store.dispatch(usuarioLogin(authUser))
             }
             else {
-                this.setState({currentUser: undefined})
+                store.dispatch(usuarioLogout())
             }
-        })
+        });
 
     }
 
@@ -46,14 +45,6 @@ class App extends Component {
                 console.log(tweets);
                 this.setState({tweets});
             });
-    };
-
-    onLogin = () => {
-        AuthService.loginWithGoogle()
-    };
-
-    onLogout = () => {
-        AuthService.logout();
     };
 
     onPostTweet = (tweet) => {
@@ -68,31 +59,32 @@ class App extends Component {
 
     onSaveConfiguracao = (updatedUser) => {
         return UserService.updateUserData(updatedUser)
-            .then(() => this.setState({currentUser: {... updatedUser}}))
+            .then(() => this.setState({currentUser: {...updatedUser}}))
     };
 
     render() {
         const {currentUser, tweets} = this.state;
         return (
             <div>
-                <Header currentUser={currentUser} onLogin={this.onLogin}
-                        onLogout={this.onLogout}/>
-                <Switch>
-                    <Route path="/" exact
-                           render={props => <Home {...props} tweets={tweets} currentUser={currentUser}
-                                                  onTweet={this.onPostTweet}
-                           />}
-                    /><Route path="/perfil/:id" exact
-                             render={props => <Perfil {...props} currentUser={currentUser}
-                                                      onFollow={this.onFollow}
-                             />}
-                />
-                    <Route path="/configuracao" exact
-                           render={props => <Configuracoes {...props} currentUser={currentUser}
-                                                           onSave={this.onSaveConfiguracao}/>}
-                    />
-                    <Route component={NotFound}/>
-                </Switch>
+                <Provider store={store}>
+                    <React.Fragment>
+                        <Header/>
+                        <Switch>
+                            <Route path="/" exact
+                                   render={props => <Home {...props} tweets={tweets} currentUser={currentUser}
+                                                          onTweet={this.onPostTweet}
+                                   />}
+                            />
+                            <Route path="/perfil/:id" exact
+                                   render={props => <Perfil {...props} currentUser={currentUser}
+                                                            onFollow={this.onFollow}
+                                   />}
+                            />
+                            <Route path="/configuracao" exact component={Configuracoes}/>
+                            <Route component={NotFound}/>
+                        </Switch>
+                    </React.Fragment>
+                </Provider>
             </div>
         );
     }

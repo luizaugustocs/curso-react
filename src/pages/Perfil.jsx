@@ -4,6 +4,7 @@ import ListaTweet from '../components/ListaTweet';
 import UserService from '../services/UserService';
 import TweetService from '../services/TweetService';
 import Loading from '../components/Loading';
+import {connect} from 'react-redux';
 
 class Perfil extends Component {
 
@@ -20,7 +21,7 @@ class Perfil extends Component {
     this.setState({ loading: true }, () => {
       UserService.getUserData(id)
         .then(user => {
-          this.setState({ user: user })
+          this.setState({ user: user });
           TweetService.getUserTweets(user)
             .then(tweets => {
               this.setState({ tweets: tweets, loading: false })
@@ -33,7 +34,7 @@ class Perfil extends Component {
 
   render() {
     const { user, tweets, loading } = this.state;
-    const { currentUser, onFollow } = this.props;
+    const { usuarioLogado, onFollow } = this.props;
 
     if (loading) {
       return (
@@ -43,7 +44,7 @@ class Perfil extends Component {
       )
     }
 
-    const shouldShowFollowButton = currentUser !== undefined && user !== undefined && currentUser.uid !== user.uid;
+    const shouldShowFollowButton = usuarioLogado !== undefined && user !== undefined && usuarioLogado.uid !== user.uid;
     return (
       <Container>
         <Row className="profile-section">
@@ -68,4 +69,12 @@ class Perfil extends Component {
   }
 }
 
-export default Perfil;
+
+const mapStateToProps = (state) => {
+    return {
+        usuarioLogado: state.usuario.usuarioAtual
+    }
+};
+
+
+export default connect(mapStateToProps)(Perfil);
