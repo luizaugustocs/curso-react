@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types';
 import {Button, Nav, Navbar} from 'react-bootstrap';
+import { withRouter } from 'react-router';
 import {NavLink} from 'react-router-dom';
 import {connect} from 'react-redux';
 import AuthService from '../services/AuthService';
@@ -13,6 +14,7 @@ class Header extends Component {
 
     onLogout = () => {
         AuthService.logout()
+      this.props.history.push('/')
     };
 
     render() {
@@ -52,4 +54,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps)(withRouter(Header));

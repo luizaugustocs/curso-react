@@ -32,9 +32,15 @@ class Perfil extends Component {
 
   }
 
+
+  onFollow = () => {
+    const {user} = this.state;
+    UserService.followUser(user)
+  }
+
   render() {
     const { user, tweets, loading } = this.state;
-    const { usuarioLogado, onFollow } = this.props;
+    const { usuarioLogado } = this.props;
 
     if (loading) {
       return (
@@ -56,7 +62,7 @@ class Perfil extends Component {
           </div>
           {shouldShowFollowButton ? (
             <div className="ml-auto">
-              <Button onClick={() => onFollow(user)}>Seguir</Button>
+              <Button onClick={this.onFollow}>Seguir</Button>
             </div>
           ) : null}
 
