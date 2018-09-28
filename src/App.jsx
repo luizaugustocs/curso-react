@@ -26,8 +26,6 @@ class App extends Component {
             if (authUser) {
                 UserService.getUserData(authUser.uid)
                     .then((user) => {
-                        console.log(authUser);
-                        console.log(user);
                         this.setState({currentUser: user});
                         this.getUserFeed(user)
 
@@ -43,7 +41,6 @@ class App extends Component {
     getUserFeed = (user) => {
         TweetService.getUserFeed(user)
             .then(tweets => {
-                console.log(tweets);
                 this.setState({tweets});
             });
     };
@@ -68,7 +65,7 @@ class App extends Component {
 
     onSaveConfiguracao = (updatedUser) => {
         return UserService.updateUserData(updatedUser)
-            .then(() => this.setState({currentUser: {... updatedUser}}))
+            .then(() => this.setState({currentUser: {...updatedUser}}))
     };
 
     render() {

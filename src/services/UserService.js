@@ -19,6 +19,10 @@ const UserService = {
     getUserData: (userId) =>
         firebase.firestore().doc(`/users/${userId}`).get()
             .then(user => user.data()),
+    getAllUsers: () =>
+      firebase.firestore().collection('/users')
+        .get()
+        .then(users => users.docs.map(user => user.data())),
     searchUser: (searchText) =>
         firebase.firestore().collection('/users')
             .get()

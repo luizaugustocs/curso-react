@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button, Container, Form, FormControl, InputGroup, Row, Alert} from 'react-bootstrap';
 import ListaTweet from '../components/ListaTweet';
+import UserList from '../components/UserList';
+import UserService from '../services/UserService';
 
 
 class Home extends Component {
@@ -13,8 +15,14 @@ class Home extends Component {
 
     state = {
         currentPost: '',
-        alertVisible: false
+        alertVisible: false,
+      users: []
     };
+
+    componentDidMount() {
+        UserService.getAllUsers()
+          .then(users => this.setState({users}))
+    }
 
     onChange = (event) => {
         this.setState({currentPost: event.target.value})
@@ -38,11 +46,12 @@ class Home extends Component {
 
     render() {
 
-        const {currentPost, alertVisible} = this.state;
+        const {currentPost, alertVisible, users} = this.state;
         const {tweets} = this.props;
 
         return (
             <Container style={{marginTop: 30}}>
+                <UserList users={users}/>
                 <Alert variant="danger" defaultShow={alertVisible}>
                     Você deve estar logado para postar alguma coisa.
                 </Alert>
